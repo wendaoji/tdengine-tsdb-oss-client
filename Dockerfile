@@ -1,7 +1,8 @@
-FROM alpine:3.19 AS builder
+FROM --platform=$BUILDPLATFORM alpine:3.19 AS builder
 
 WORKDIR /opt
 
+ARG TARGETARCH
 ARG VERNUMBER
 ARG TAOSADAPTER_GIT_TAG_NAME
 ARG NPROC
@@ -35,6 +36,7 @@ COPY osThread.h.diff .
 
 # The build arguments `-DBUILD_TOOLS=false -DBUILD_KEEPER=false -DBUILD_TEST=false` are set to reduce potential errors. If you need to build more components, please modify the Dockerfile accordingly.
 # When compiling with multiple threads, errors can be hard to trace; use  -j1  to build single-threaded instead.
+# cmake -DCPUTYPE=aarch64 。  x86, x86-64, arm64
 RUN git apply --check osThread.h.diff \
   && git apply osThread.h.diff  \
   && mkdir build \
