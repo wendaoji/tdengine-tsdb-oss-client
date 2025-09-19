@@ -1,14 +1,16 @@
 This branch is intended to allow the client to run under Alpine, so it implements compilation in an Alpine environment. At present, only the `taos`  command has been verified to work; other features have not been tested.
 
+<https://github.com/wendaoji/tdengine-tsdb-oss-client>
+
 # build
 
 ```bash
-docker build -t tdengine/tdengine-tsdb-oss-client:3.3.7.5-alpine .
+docker build -t wendaoji/tdengine-tsdb-oss-client:3.3.7.5-alpine .
 # or
 VERNUMBER=3.3.7.5
 TAOSADAPTER_GIT_TAG_NAME=ver-3.3.7.5
 NPROC=$(nproc)
-docker build -t tdengine/tdengine-tsdb-oss-client:3.3.7.5-alpine --progress=plain --build-arg NPROC=NPROC --build-arg VERNUMBER=${VERNUMBER} --build-arg TAOSADAPTER_GIT_TAG_NAME=${TAOSADAPTER_GIT_TAG_NAME} .
+docker build -t wendaoji/tdengine-tsdb-oss-client:3.3.7.5-alpine --progress=plain --build-arg NPROC=NPROC --build-arg VERNUMBER=${VERNUMBER} --build-arg TAOSADAPTER_GIT_TAG_NAME=${TAOSADAPTER_GIT_TAG_NAME} .
 ```
 
 
@@ -16,12 +18,12 @@ docker build -t tdengine/tdengine-tsdb-oss-client:3.3.7.5-alpine --progress=plai
 
 ```bash
 # use taos
-docker run --rm tdengine/tdengine-tsdb-oss-client:3.3.7.5-alpine taos -h xxxxxx -u root -P 6030 -ptaosdata
+docker run --rm wendaoji/tdengine-tsdb-oss-client:3.3.7.5-alpine taos -h xxxxxx -u root -P 6030 -ptaosdata
 
 # By default, logs are written to `/var/log/taos`. If the process lacks write permission there, you can either:
 # 1. Set a different directory in `taos.cfg` (`logDir ...`), or
 # 2. Run with `-o /dev/null` to discard logs.
-docker run --rm -it tdengine/tdengine-tsdb-oss-client:3.3.7.5-alpine sh
+docker run --rm -it wendaoji/tdengine-tsdb-oss-client:3.3.7.5-alpine sh
 echo "logDir /taos/logs" >> /etc/taos/taos.cfg
 taos -h xxxxxx -u root -P 6030 -ptaosdata
 ```
