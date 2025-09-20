@@ -10,7 +10,8 @@ docker build -t wendaoji/tdengine-tsdb-oss-client:3.3.7.5-alpine .
 VERNUMBER=3.3.7.5
 TAOSADAPTER_GIT_TAG_NAME=ver-3.3.7.5
 NPROC=$(nproc)
-docker build -t wendaoji/tdengine-tsdb-oss-client:3.3.7.5-alpine --progress=plain --build-arg NPROC=NPROC --build-arg VERNUMBER=${VERNUMBER} --build-arg TAOSADAPTER_GIT_TAG_NAME=${TAOSADAPTER_GIT_TAG_NAME} .
+# --platform linux/amd64 linux/arm64
+docker build -t wendaoji/tdengine-tsdb-oss-client:3.3.7.5-alpine --progress=plain --build-arg NPROC=NPROC --build-arg VERNUMBER=${VERNUMBER} --build-arg TAOSADAPTER_GIT_TAG_NAME=${TAOSADAPTER_GIT_TAG_NAME} --platform linux/arm64 .
 ```
 
 
