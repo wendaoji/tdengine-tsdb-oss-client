@@ -11,7 +11,7 @@ ARG NPROC
 
 ENV VERNUMBER=${VERNUMBER:-"3.3.7.5"}
 ENV TAOSADAPTER_GIT_TAG_NAME=${TAOSADAPTER_GIT_TAG_NAME:-"ver-3.3.7.5"}
-ENV NPROC=${NPROC:-4}
+ENV NPROC=${NPROC}
 
 # Install build dependencies
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
@@ -48,7 +48,9 @@ RUN git apply --check osThread.h.diff \
   && git apply osThread.h.diff  \
   && mkdir build \
   && cd build \
-  && cmake .. -DROCKSDB_LIB_DIR=/deps/${TARGETARCH}/rocksdb_static  -DBUILD_TOOLS=false -DBUILD_KEEPER=false -DBUILD_TEST=false \
+  && export NPROC=${NPROC:-$(nproc)} \
+  # && cmake .. -DROCKSDB_LIB_DIR=/deps/${TARGETARCH}/rocksdb_static  -DBUILD_TOOLS=false -DBUILD_KEEPER=false -DBUILD_TEST=false \
+  && cmake .. -DBUILD_CONTRIB=true  -DBUILD_TOOLS=false -DBUILD_KEEPER=false -DBUILD_TEST=false \
   && make VERBOSE=1 -j${NPROC}
 
 
