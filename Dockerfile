@@ -1,8 +1,8 @@
-FROM --platform=$BUILDPLATFORM alpine:3.19 AS builder
+FROM alpine:3.19 AS builder
 
 WORKDIR /opt
 
-# cross compilation. run on $BUILDPLATFORM, building for $TARGETPLATFORM
+# cross compilation. run on $BUILDPLATFORM, building for $TARGETPLATFORM/$TARGETARCH
 ARG BUILDPLATFORM
 ARG TARGETARCH
 ARG VERNUMBER
@@ -39,16 +39,16 @@ COPY osThread.h.diff .
 # The build arguments `-DBUILD_TOOLS=false -DBUILD_KEEPER=false -DBUILD_TEST=false` are set to reduce potential errors. If you need to build more components, please modify the Dockerfile accordingly.
 # When compiling with multiple threads, errors can be hard to trace; use  -j1  to build single-threaded instead.
 # cmake -DCPUTYPE=arm32/arm64/loongarch64/mips64/x86-64/x86
-ENV TD_CPUTYPE=${TARGETARCH}
-RUN if [ "$TARGETARCH" = "amd64" ]; then \
-  export TD_CPUTYPE="x86-64"; \
-  fi
-
+# ENV TD_CPUTYPE=${TARGETARCH}
+# RUN if [ "$TARGETARCH" = "amd64" ]; then \
+#   export TD_CPUTYPE="x86-64"; \
+#   fi
+# TD_DEPS_DIR=x86/arm/
 RUN git apply --check osThread.h.diff \
   && git apply osThread.h.diff  \
   && mkdir build \
   && cd build \
-  && cmake .. -DCPUTYPE=${TD_CPUTYPE} -DBUILD_TOOLS=false -DBUILD_KEEPER=false -DBUILD_TEST=false \
+  && cmake .. -DROCKSDB_LIB_DIR=/deps/${TARGETARCH}/rocksdb_static  -DBUILD_TOOLS=false -DBUILD_KEEPER=false -DBUILD_TEST=false \
   && make VERBOSE=1 -j${NPROC}
 
 
