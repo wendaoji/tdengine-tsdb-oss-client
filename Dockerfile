@@ -83,12 +83,12 @@ COPY entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh \
   && chmod +x bin/taos \
-  && ln -s /opt/tdengine-tsdb-oss-client/lib/libtaos.so.* /opt/tdengine-tsdb-oss-client/lib/libtaos.so \
-  && ln -s /opt/tdengine-tsdb-oss-client/lib/libtaosnative.so.* /opt/tdengine-tsdb-oss-client/lib/libtaosnative.so \
-  && ln -s /opt/tdengine-tsdb-oss-client/lib/libunwind.so.8.* /opt/tdengine-tsdb-oss-client/lib/libunwind.so.8 \
-  && ln -s /opt/tdengine-tsdb-oss-client/lib/liblzma.so.5.* /opt/tdengine-tsdb-oss-client/lib/liblzma.so.5 \
-  && ln -s /opt/tdengine-tsdb-oss-client/lib/libstdc++.so.6.* /opt/tdengine-tsdb-oss-client/lib/libstdc++.so.6
-
+  && cd /opt/tdengine-tsdb-oss-client/lib \
+  && ln -s libtaos.so.* libtaos.so \
+  && ln -s libtaosnative.so.* libtaosnative.so \
+  && ln -s libunwind.so.8.* libunwind.so.8 \
+  && ln -s liblzma.so.5.* liblzma.so.5 \
+  && ln -s libstdc++.so.6.* libstdc++.so.6
 
 ENTRYPOINT ["/entrypoint.sh"]
 
