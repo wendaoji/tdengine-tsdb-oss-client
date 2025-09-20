@@ -19,7 +19,7 @@ docker build -t wendaoji/tdengine-tsdb-oss-client:3.3.7.5-alpine --progress=plai
 
 ```bash
 # use taos
-docker run --rm wendaoji/tdengine-tsdb-oss-client:3.3.7.5-alpine taos -h xxxxxx -u root -P 6030 -ptaosdata
+docker run --rm -i wendaoji/tdengine-tsdb-oss-client:3.3.7.5-alpine taos -h xxxxxx -u root -P 6030 -ptaosdata
 
 # By default, logs are written to `/var/log/taos`. If the process lacks write permission there, you can either:
 # 1. Set a different directory in `taos.cfg` (`logDir ...`), or
