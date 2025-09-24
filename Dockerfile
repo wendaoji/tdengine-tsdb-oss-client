@@ -8,7 +8,7 @@ ENV VERSION ${VERSION}
 ENV UBUNTU_REPO ${UBUNTU_REPO:-"mirrors.tuna.tsinghua.edu.cn"}
 # TDengine TSDB-OSS Client
 # TDengine TSDB-OSS-Lite
-ENV CLIENT_NAME ${CLIENT_NAME:-"TDengine TSDB-OSS Client"}
+ENV CLIENT_NAME ${CLIENT_NAME:-"TDengine TSDB-OSS-Lite"}
 ENV LANG en_US.utf8
 WORKDIR /opt
 
