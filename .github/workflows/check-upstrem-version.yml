@@ -1,0 +1,71 @@
+name: Version Check and Update
+
+on:
+  schedule:
+    # 每天 UTC 时间 0 点运行 (北京时间 8 点)
+    - cron: "0 0 * * *"
+  # 允许手动触发
+  workflow_dispatch:
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # 需要获取完整的提交历史才能创建 tag
+          fetch-depth: 0
+
+      - name: Set up environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq curl
+
+      - name: Run version check
+        id: version-check
+        run: |
+          # 获取当前版本
+          CURRENT_VERSION=$(cat VERSION)
+          echo "Current version: $CURRENT_VERSION"
+
+          # 获取最新版本
+          LATEST_VERSION=$(curl -fsSL https://www.taosdata.com/wp-content/themes/tdengine/js/product-data.json | \
+            jq -r '[ .[] | select(.name == "TDengine TSDB-OSS-Lite") |
+              .versions[] |
+              select(.platform == "Linux-Generic" and .arch == "x64" and .type == "Client") ] |
+            sort_by(.version | split(".") | map(tonumber)) |
+            last | .version')
+          echo "Latest version: $LATEST_VERSION"
+
+          # 比较版本
+          if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
+            echo "::set-output name=update_needed::true"
+            echo "::set-output name=new_version::$LATEST_VERSION"
+          else
+            echo "::set-output name=update_needed::false"
+          fi
+
+      - name: Update version and commit
+        if: steps.version-check.outputs.update_needed == 'true'
+        run: |
+          # 设置 Git 身份
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@users.noreply.github.com"
+
+          # 更新版本文件
+          NEW_VERSION="${{ steps.version-check.outputs.new_version }}"
+          echo "$NEW_VERSION" > VERSION
+
+          # 提交更改
+          git add VERSION
+          git commit -m "chore: update version to $NEW_VERSION [skip ci]"
+          git push origin master
+
+          # 创建并推送 tag
+          TAG_NAME="$NEW_VERSION"
+          git tag -a "$TAG_NAME" -m "Version $NEW_VERSION"
+          git push origin --tags "$TAG_NAME"
+
+          echo "Version updated to $NEW_VERSION and tag $TAG_NAME created"
