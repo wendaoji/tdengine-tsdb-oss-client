@@ -17,6 +17,7 @@ jobs:
         with:
           # 需要获取完整的提交历史才能创建 tag
           fetch-depth: 0
+          persist-credentials: true
 
       - name: Set up environment
         run: |
@@ -41,14 +42,16 @@ jobs:
 
           # 比较版本
           if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
-            echo "::set-output name=update_needed::true"
-            echo "::set-output name=new_version::$LATEST_VERSION"
+            echo "update_needed=true" >> $GITHUB_OUTPUT
+            echo "new_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=update_needed::false"
+            echo "update_needed=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Update version and commit
         if: steps.version-check.outputs.update_needed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # 设置 Git 身份
           git config --global user.name "github-actions"
