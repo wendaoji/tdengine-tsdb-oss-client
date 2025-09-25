@@ -5,7 +5,7 @@ ARG UBUNTU_REPO
 ARG CLIENT_NAME
 ARG TARGETARCH
 ENV VERSION ${VERSION}
-ENV UBUNTU_REPO ${UBUNTU_REPO:-"mirrors.tuna.tsinghua.edu.cn"}
+ENV UBUNTU_REPO ${UBUNTU_REPO:-"https://mirrors.tuna.tsinghua.edu.cn"}
 # TDengine TSDB-OSS Client
 # TDengine TSDB-OSS-Lite
 ENV CLIENT_NAME ${CLIENT_NAME:-"TDengine TSDB-OSS Client"}
@@ -15,7 +15,7 @@ WORKDIR /opt
 COPY entrypoint.sh /
 
 RUN set -eux \
-  && [ -n "${UBUNTU_REPO}" ] && sed -i "s|archive.ubuntu.com|${UBUNTU_REPO}|g" /etc/apt/sources.list.d/ubuntu.sources; \
+  && [ -n "${UBUNTU_REPO}" ] && sed -i "s#http://(archive|ports).ubuntu.com#${UBUNTU_REPO}#g" /etc/apt/sources.list.d/ubuntu.sources; \
   apt-get update \
   && apt-get install -y locales jq curl \
   && rm -rf /var/lib/apt/lists/* \
