@@ -35,4 +35,4 @@ RUN set -eux \
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 
-CMD [ "taos --help" ]
+CMD [ "taos","--help" ]
