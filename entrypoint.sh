@@ -5,4 +5,4 @@ TMPDIR=${TMPDIR:-/tmp}
 trap 'kill -TERM $PID; wait $PID' TERM INT
 
 
-"$@"
+exec "$@"
